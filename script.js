@@ -175,7 +175,7 @@ function update(){
         clearInterval(CLOCK);
         console.log("gameover");
     }
-    SNAKE.isOutOfBorders();
+    SNAKE.onOutOfBounds();
     checkFood();
     RENDERER.renderFood(FOOD);
     RENDERER.renderSnake(SNAKE); 
