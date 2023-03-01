@@ -1,0 +1,43 @@
+*{
+    padding:0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(71, 71, 71);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#grid{
+    display: grid;
+    background-color: antiquewhite;
+    margin: 0 auto;
+    position: relative;
+}
+
+.cell{
+    background-color: aquamarine;
+    border: 1px solid rgb(160, 160, 160);
+}
+
+.snake-node{
+    position: absolute;
+    background-color: rgb(53, 53, 53);
+    height: 5vmin;
+    width: 5vmin;
+    border: 1px solid rgb(160, 160, 160);
+}
+
+.food{
+    position: absolute;
+    background-color: red;
+    height: 5vmin;
+    width: 5vmin;
+    top:5vmin;
+    left:5vmin;
+
+}
