@@ -1,61 +1,8 @@
 
-/**
- * 
- * Node:
- *  - #x
- *  - #y
- *  - #next
- *  - #prev
- *  - constructor
- *  - getPosition() : [this.#x, this.#y]
- *  - setPosition(number, number)
- *  - next() : this.#next
- *  - prev() : this.#prev
- * 
- * Snake:
- *  - #nodes[] : Node
- *  - #direction : Number           // 0=up 1=right 2=down 3=left
- *  - #head
- *  - #tail
- *  - constructor
- *  - move()                        // moves one cell, depending on the direction
- *  - addNode()                     // push new node on food eat
- *  - changeDirection(Number)       // works in conjunction with getInput()
- *  - getDireciton() : number
- *  - getNodes() : [] :Node
- *  - getHead() : Node;
- *  - getTail() : Node
- * 
- *  snake nodes visualization:
- *      [H][0][0][T]
- *       0  1  2  3
- *  0 is always head; (nodes.length - 1) is always the tail; 
- *  we always push to the end of the array
- *        
- *  Game:
- *  - #renderer : HtmlRenderer
- *  - #food : Node
- *  - #snake : Snake
- *  - start()
- *  - update()
- *  - spawnFood()
- *  - getInput() : String           // KeyCode on KeyDown
- *  + methods to check conditions
- * 
- *  HtmlRenderer:
-    *  maybe place stuff like
-    *    const GRID_HEIGHT = 15;
-    *    const GRID_WIDTH = 30;
-    *    const CELL_SIZE = 5;
-    *  here? there is no need for it to be anywhere else, all calculations can be done in terms of grid cells
-    *  then in order to dender it. just multiply by constants?
-    * TODO: how to define world borders? maybe in [+ methods to check conditions]
- *
- *  - initWorld()                   // render the grid, draw the snake and food 
- *  - renderGrid()
- *  - rednerSnake()
- *  - renderFood()
- */
+// BUG: інколи можна спіткнутися об самого себе, маючи в змії лише 3 елементи => неправильно розраховується Snake::facedItself()
+// BUG: інпут лаг. Імплементувати фреймрейт індепенденс
+// TODO: рефакторинг структури проги
+
 
 class Node{
     #x;
@@ -105,6 +52,8 @@ class Snake{
         this.#nodes.push(new Node(this.#nodes[this.#nodes.length - 1].getX(), this.#nodes[this.#nodes.length - 1].getY()));
     }
     getPosition() { return [this.#nodes[0].getX(), this.#nodes[0].getY()]}
+    getX() { return this.#nodes[0].getX()}
+    getY() { return this.#nodes[0].getY()}
     changeDirection(x, y) { this.#direction[0] = x; this.#direction[1] = y; }
     getDirection() { return this.#direction; }
     getNodes() { return this.#nodes; }
@@ -118,10 +67,13 @@ class Snake{
     }
     isOutOfBorders(){
         //TODO: fix
-        if(this.#nodes[0].getY() < 0 || this.#nodes[0].getY() === 15 || 
-                this.#nodes[0].getX() < 0 || this.#nodes[0].getX() > 29)
+        if(this.getX() == -1 || this.getX() === 30 || 
+                this.getY() === -1 || this.getY() === 15)
             return true;
         return false;
+    }
+    onOutOfBounds(){
+        // if a node is out of bounds, change its coordinates;
     }
 }
 
@@ -163,24 +115,25 @@ class HtmlRenderer{
     #removeSnake(){
         document.querySelectorAll('.snake-node').forEach(e => e.remove());
     }
-    renderFood(){
-
+    renderFood(foodElement){
+        if(document.getElementById("food") !== null)
+            this.#removeFood();
+        let food = document.createElement("div");
+        food.style.top = `${foodElement.getY() * this.#CELL_SIZE}${this.#UNITS}`;
+        food.style.left = `${foodElement.getX()  * this.#CELL_SIZE}${this.#UNITS}`;
+        food.id = "food";
+        this.#grid.append(food);
+    }
+    #removeFood(){
+        let el = document.getElementById("food");
+        el.remove();
     }
 }
-
-// TODO: implement condition ckecking
-    // onFood
-    // onFacedSnake DONE
-    // onOutOfBounds
-    // gameOver
-// TODO: implement input handling DONE
-// TODO: implement food
-
 
 const RENDERER = new HtmlRenderer(document.getElementById("grid"));
 const FOOD = new Node(0, 0);
 const SNAKE = new Snake(0, 12);
-const CLOCK = window.setInterval(update, 100);
+const CLOCK = window.setInterval(update, 150);
 
 const GRID_WIDTH = 30;
 const GRID_HEIGHT = 15;
@@ -213,49 +166,53 @@ function getInput(){
 }
 
 getInput();
+initFood();
 
 function update(){
-    if(SNAKE.isOutOfBorders() || SNAKE.facedItself()){
+    if(SNAKE.isOutOfBorders() || SNAKE.facedItself() || isWin()){
         clearInterval(CLOCK);
         console.log(true);
     }
+    checkFood();
+    RENDERER.renderFood(FOOD);
     RENDERER.renderSnake(SNAKE); 
     SNAKE.step(); 
-    console.log(findEmptyCells());
 };
 
 function findEmptyCells(){
     let cells = [];
-    let addFlag = true;
     for(let i = 0; i < GRID_HEIGHT; i++){
         for(let j = 0; j < GRID_WIDTH; j++){
-            for(let s = 0; s < SNAKE.length; s++){
+            let addFlag = true;
+            for(let s = 0; s < SNAKE.getNodes().length; s++){
                 if(i == SNAKE.getNodes()[s].getY() && j == SNAKE.getNodes()[s].getX())
                     addFlag = false;
             }
             if(addFlag)
-                cells.push([j, i ]);
-            addFlag = true;
+                cells.push({x: j, y: i });
         }
     }
-
-
     return cells;
 }
 
-function spawnFood(){
+function initFood(){
     // find a random spot amongst the set of empty cells and place food there
-    
-    let x = Math.random() * GRID_WIDTH;
-    let y = Math.random() * GRID_HEIGHT;
-
-
+    let cells = findEmptyCells();
+    let ind = Math.floor(Math.random() * cells.length - 1);
+    FOOD.setPosition(cells[ind].x, cells[ind].y);
 }
 
-function checkForFood(){
-    if(SNAKE.getPosition[0] === FOOD.getX() && SNAKE.getPosition[1] === FOOD.getY()){
+function checkFood(){
+    let x = SNAKE.getX();
+    let y = SNAKE.getY();
+    if(x === FOOD.getX() && y === FOOD.getY()){
         SNAKE.addNode();
-        spawnFood();
+        initFood();
     }
 }
 
+function isWin(){
+    if(findEmptyCells() === 0)
+        return true;
+    return false;
+}

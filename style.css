@@ -32,12 +32,9 @@ body{
     border: 1px solid rgb(160, 160, 160);
 }
 
-.food{
+#food{
     position: absolute;
     background-color: red;
     height: 5vmin;
     width: 5vmin;
-    top:5vmin;
-    left:5vmin;
-
 }
