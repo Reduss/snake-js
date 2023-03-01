@@ -2,7 +2,7 @@
 // BUG: інколи можна спіткнутися об самого себе, маючи в змії лише 3 елементи => неправильно розраховується Snake::facedItself()
 // BUG: інпут лаг. Імплементувати фреймрейт індепенденс
 // TODO: рефакторинг структури проги
-
+// TODO: зробити глобальні змінні в одному місці (такі як розмір гріда і тд)
 
 class Node{
     #x;
@@ -65,15 +65,17 @@ class Snake{
         }
         return false;
     }
-    isOutOfBorders(){
-        //TODO: fix
-        if(this.getX() == -1 || this.getX() === 30 || 
-                this.getY() === -1 || this.getY() === 15)
-            return true;
-        return false;
-    }
     onOutOfBounds(){
-        // if a node is out of bounds, change its coordinates;
+        for(let i = 0; i < this.#nodes.length; i++){
+            if(this.#nodes[i].getY() < 0)
+                this.#nodes[i].setPosition(this.#nodes[i].getX(), 14);
+            if(this.#nodes[i].getY() > 14)
+                this.#nodes[i].setPosition(this.#nodes[i].getX(), 0);
+            if(this.#nodes[i].getX() < 0)
+                this.#nodes[i].setPosition(29, this.#nodes[i].getY());
+            if(this.#nodes[i].getX() > 29)
+                this.#nodes[i].setPosition(0, this.#nodes[i].getY());
+        }
     }
 }
 
@@ -169,10 +171,11 @@ getInput();
 initFood();
 
 function update(){
-    if(SNAKE.isOutOfBorders() || SNAKE.facedItself() || isWin()){
+    if(SNAKE.facedItself() || isWin()){
         clearInterval(CLOCK);
-        console.log(true);
+        console.log("gameover");
     }
+    SNAKE.isOutOfBorders();
     checkFood();
     RENDERER.renderFood(FOOD);
     RENDERER.renderSnake(SNAKE); 
@@ -212,7 +215,7 @@ function checkFood(){
 }
 
 function isWin(){
-    if(findEmptyCells() === 0)
+    if(findEmptyCells().length === 0)
         return true;
     return false;
 }
