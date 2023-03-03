@@ -146,6 +146,11 @@ class HtmlRenderer{
         let el = document.getElementById("food");
         el.remove();
     }
+    renderScoreCounter(snake){
+        let score = snake.getNodes().length * 10;
+        document.getElementById("score-counter").innerHTML = `Score: ${score}`;
+
+    }
 }
 
 /**
@@ -204,12 +209,13 @@ getInput();
 initFood();
 
 function update(){
+    SNAKE.onOutOfBounds();
     if(SNAKE.facedItself() || isWin()){
         clearInterval(CLOCK);
         console.log("gameover");
     }
-    SNAKE.onOutOfBounds();
     checkFood();
+    RENDERER.renderScoreCounter(SNAKE);
     RENDERER.renderFood(FOOD);
     RENDERER.renderSnake(SNAKE); 
     SNAKE.step(); 
