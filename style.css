@@ -1,20 +1,86 @@
+:root{
+    --text-color: #26d369;
+    --background-color: #081e12 ;
+    --glow-color: #32bd7e3a;
+}
+
 *{
     padding:0;
     margin: 0;
     box-sizing: border-box;
+    font-size: 1.5rem;
+    font-family: 'VT323', monospace;
+    color: var(--text-color);
 }
 
 body{
-    background-color: rgb(71, 71, 71);
+    height: 100vh;
+    background-color: var(--background-color);
+}
+
+main{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 2px solid red;
+}
+
+.backround-image{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.background-glow-elem{
+    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    height: 7vmin;
+    width: 15vmin;
+    border-radius: 50%;
+    border: 2px solid yellow;
+    box-shadow: 0 0 90vmin 50vmin var(--glow-color);
+    
+}
+
+.game-header{
+    display: none;
+}
+
+.game-footer{
+    display: none;
+    gap: 2rem;
+}
+
+.button{
+    background-color: bisque;
+    width: 10rem;
+    height: 4rem;
+    font-size: 2rem;
+}
+
+.game-analytics{
+    color: var(--text-color);
     display: flex;
+    background-color: aliceblue;
+    gap:1rem;
+}
+
+#game-wrapper{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    border: 3px solid rgb(255, 0, 140);
 }
 
 #grid{
     display: grid;
-    background-color: antiquewhite;
     margin: 0 auto;
     position: relative;
 }
@@ -27,14 +93,10 @@ body{
 .snake-node{
     position: absolute;
     background-color: rgb(53, 53, 53);
-    height: 5vmin;
-    width: 5vmin;
     border: 1px solid rgb(160, 160, 160);
 }
 
 #food{
     position: absolute;
     background-color: red;
-    height: 5vmin;
-    width: 5vmin;
 }

@@ -6,9 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="grid"></div>
+    <main>
+        <img class="backround-image" id="bezel" src="\assets\bezel.png">
+        <div class="background-glow-elem" id="glow-1"></div>
+        <div class="background-glow-elem" id="glow-2"></div>
+        <div class="background-glow-elem" id="glow-3"></div>
+        <img class="backround-image" id="scan" src="\assets\scanlines.png">
+        <div id="game-wrapper">
+            <div class="game-header">
+                <div class="button pause-button">menu placeholder</div>
+                <div class="score">Score:000</div>
+            </div>
+            <div id="grid"></div>
+            <div class="game-footer">
+                <button class="button button-pause" >Pause</button>
+            </div>
+        </div>
+    </main>
     <script type="text/javascript" src="script.js" ></script>
 </body>
 </html>

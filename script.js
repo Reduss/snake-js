@@ -3,6 +3,8 @@
 // BUG: інпут лаг. Імплементувати фреймрейт індепенденс
 // TODO: рефакторинг структури проги
 // TODO: зробити глобальні змінні в одному місці (такі як розмір гріда і тд)
+// TODO: візуал 
+
 
 class Node{
     #x;
@@ -48,6 +50,12 @@ class Snake{
             prevY = tempy; 
         }
     }
+    move(cellsPerSecond){
+        while(cellsPerSecond != 0){
+            this.step();
+            cellsPerSecond--;
+        }
+    }
     addNode(){  
         this.#nodes.push(new Node(this.#nodes[this.#nodes.length - 1].getX(), this.#nodes[this.#nodes.length - 1].getY()));
     }
@@ -80,10 +88,14 @@ class Snake{
 }
 
 
+class Clock{
+
+}
+
 class HtmlRenderer{
     #GRID_HEIGHT = 15;
     #GRID_WIDTH = 30;
-    #CELL_SIZE = 5;
+    #CELL_SIZE = 4;
     #UNITS = "vmin"
 
     #grid;
@@ -111,6 +123,8 @@ class HtmlRenderer{
             nodeToAdd.id = `${i}`;
             nodeToAdd.style.top = `${nodes[i].getY() * this.#CELL_SIZE}${this.#UNITS}`;
             nodeToAdd.style.left = `${nodes[i].getX() * this.#CELL_SIZE}${this.#UNITS}`;
+            nodeToAdd.style.width = `${this.#CELL_SIZE}${this.#UNITS}`;
+            nodeToAdd.style.height = `${this.#CELL_SIZE}${this.#UNITS}`;
             this.#grid.append(nodeToAdd);
         }
     }
@@ -123,6 +137,8 @@ class HtmlRenderer{
         let food = document.createElement("div");
         food.style.top = `${foodElement.getY() * this.#CELL_SIZE}${this.#UNITS}`;
         food.style.left = `${foodElement.getX()  * this.#CELL_SIZE}${this.#UNITS}`;
+        food.style.width = `${this.#CELL_SIZE}${this.#UNITS}`;
+        food.style.height = `${this.#CELL_SIZE}${this.#UNITS}`;
         food.id = "food";
         this.#grid.append(food);
     }
@@ -132,10 +148,27 @@ class HtmlRenderer{
     }
 }
 
+/**
+ * HANDLING CLOCK:
+ *  - update the renderer a fixed amount of times per second, independently of frames
+ *  - step fixed amount of times per second (around 10 cells per second)
+ * 
+ *  - as we dont have any speed variables to change position, prolly we should just call step() a set amount of times per second, 
+ *    and this anount shold be calculated using delta time ?
+ */
+
+
+
+
+
 const RENDERER = new HtmlRenderer(document.getElementById("grid"));
 const FOOD = new Node(0, 0);
 const SNAKE = new Snake(0, 12);
 const CLOCK = window.setInterval(update, 150);
+
+
+const SNAKE_SPEED = 1; // cells per second
+
 
 const GRID_WIDTH = 30;
 const GRID_HEIGHT = 15;
@@ -219,3 +252,32 @@ function isWin(){
         return true;
     return false;
 }
+
+
+function gameLoop(){
+
+    let currentTime = Date.now();
+    let dt = (currentTime - prevTime) / 1000;
+
+    let altSpeed = Math.floor(SNAKE_SPEED * dt);
+
+    SNAKE.move(altSpeed)
+    newUpdate();
+    render();
+    prevTime = currentTime;
+
+    //requestAnimationFrame(gameLoop);
+}
+
+function newUpdate(){
+}
+
+function render(){
+    RENDERER.renderSnake(SNAKE);
+    RENDERER.renderFood(FOOD);
+}
+
+
+
+let prevTime = Date.now();
+//requestAnimationFrame(gameLoop);
