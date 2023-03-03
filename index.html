@@ -11,21 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="background">
+        <div class="scan-line">
+            <div class="line"></div>
+        </div>
+        <div class="background-images">
+            <img class="backround-image" id="bezel" src="\assets\bezel.png" alt="bezel image">
+            <img class="backround-image" id="scan" src="\assets\scanlines.png" alt="lines image">
+            <img class="backround-image" id="noise-gif" src="\assets\noise.gif" alt="lines image">
+        </div>
+    </div>
     <main>
-        <img class="backround-image" id="bezel" src="\assets\bezel.png">
-        <div class="background-glow-elem" id="glow-1"></div>
-        <div class="background-glow-elem" id="glow-2"></div>
-        <div class="background-glow-elem" id="glow-3"></div>
-        <img class="backround-image" id="scan" src="\assets\scanlines.png">
         <div id="game-wrapper">
             <div class="game-header">
-                <div class="button pause-button">menu placeholder</div>
+                <div class="button pause-button">Pause </div>
                 <div class="score">Score:000</div>
             </div>
             <div id="grid"></div>
-            <div class="game-footer">
-                <button class="button button-pause" >Pause</button>
-            </div>
         </div>
     </main>
     <script type="text/javascript" src="script.js" ></script>
